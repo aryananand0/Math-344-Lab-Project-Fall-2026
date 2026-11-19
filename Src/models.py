@@ -12,3 +12,42 @@ def bias_baseline(R):
     b_item[has_rating] = (
         np.nansum(residual, axis=0)[has_rating] / n_item[has_rating])
     return mu, b_user, b_item
+
+
+def baseline_matrix(R):
+    # Get the overall average, user effects, and movie effects
+    mu, b_user, b_item = bias_baseline(R)
+
+    # Use those values to predict ratings for every user and movie
+    return mu + b_user[:, None] + b_item[None, :]
+
+
+def rank_k(U, s, Vt, k):
+    # Keep the first k parts of the SVD to make a smaller approximation
+    return U[:, :k] @ np.diag(s[:k]) @ Vt[:k, :]
+
+
+def iterative_svd_predict(R, k, n_iter=15):
+    # Find which ratings are already in the matrix
+    known = ~np.isnan(R)
+
+    # Get our baseline predictions
+    B = baseline_matrix(R)
+
+    # Subtract the baseline and fill missing values with zero
+    X = np.where(known, R - B, 0.0)
+
+    # Repeat the SVD process to improve the missing ratings
+    for _ in range(n_iter):
+        # Break the current matrix down using SVD
+        U, s, Vt = np.linalg.svd(X, full_matrices=False)
+
+        # Rebuild the matrix using only the first k components
+        L = rank_k(U, s, Vt, k)
+
+        # Keep the actual ratings and update the missing ones
+        X = np.where(known, R - B, L)
+
+    # Add the baseline back to get the final predictions
+    return L + B
+
