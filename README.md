@@ -36,7 +36,7 @@ Open any notebook below, click **Open in Colab**, and choose **Runtime → Run a
 4. [Hidden factors and my recommendations](Notebooks/04_what_it_learned_my_ratings.ipynb)
 5. [Model comparison chart](Notebooks/05_hero_figure.ipynb)
 
-The shared code is in [evaluate.py](Src/evaluate.py) and [models.py](Src/models.py). If you're using Jupyter locally, install the packages with `pip install -r requirements.txt` first.
+I keep the functions I reuse in [evaluate.py](Src/evaluate.py) and [models.py](Src/models.py). If you're using Jupyter locally, install the packages with `pip install -r requirements.txt` first.
 
 ## Data and references
 

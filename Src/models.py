@@ -31,7 +31,7 @@ def iterative_svd_predict(R, k, n_iter=15, after_round=None):
     # Find which ratings are already in the matrix
     known = ~np.isnan(R)
 
-    # Get our baseline predictions
+    # Get the baseline predictions
     B = baseline_matrix(R)
 
     # Subtract the baseline and fill missing values with zero
