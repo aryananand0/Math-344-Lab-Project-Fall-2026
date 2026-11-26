@@ -24,10 +24,10 @@ def baseline_matrix(R):
 
 def rank_k(U, s, Vt, k):
     # Keep the first k parts of the SVD to make a smaller approximation
-    return U[:, :k] @ np.diag(s[:k]) @ Vt[:k, :]
+    return (U[:, :k] * s[:k]) @ Vt[:k, :]
 
 
-def iterative_svd_predict(R, k, n_iter=15):
+def iterative_svd_predict(R, k, n_iter=15, after_round=None):
     # Find which ratings are already in the matrix
     known = ~np.isnan(R)
 
@@ -35,7 +35,8 @@ def iterative_svd_predict(R, k, n_iter=15):
     B = baseline_matrix(R)
 
     # Subtract the baseline and fill missing values with zero
-    X = np.where(known, R - B, 0.0)
+    residual = R - B
+    X = np.where(known, residual, 0.0)
 
     # Repeat the SVD process to improve the missing ratings
     for _ in range(n_iter):
@@ -46,7 +47,11 @@ def iterative_svd_predict(R, k, n_iter=15):
         L = rank_k(U, s, Vt, k)
 
         # Keep the actual ratings and update the missing ones
-        X = np.where(known, R - B, L)
+        X = np.where(known, residual, L)
+
+        # The notebook can use this to check the error after each round
+        if after_round is not None:
+            after_round(L + B)
 
     # Add the baseline back to get the final predictions
     return L + B
