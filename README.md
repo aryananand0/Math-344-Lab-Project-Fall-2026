@@ -46,7 +46,7 @@ I keep the functions I reuse in [evaluate.py](Src/evaluate.py) and [models.py](S
 
 ## Use of AI tools
 
-I used OpenAI Codex to help organize the notebooks, review and revise explanations and help debug some of the code
+I used OpenAI to help organize the notebooks, review and revise explanations and help debug some of the code
 
 ## About
 
